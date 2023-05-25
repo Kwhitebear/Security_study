@@ -1,3 +1,5 @@
+<strong>Black Hat PDF : https://i.blackhat.com/us-18/Thu-August-9/us-18-Bulazel-Windows-Offender-Reverse-Engineering-Windows-Defenders-Antivirus-Emulator.pdf</strong>
+
 # MsMpEng.exe
 
 ![image](https://github.com/Kwhitebear/Security_study/assets/99308681/5ceef7cd-6613-4c05-9c73-7a755922e4c7)
