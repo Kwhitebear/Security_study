@@ -5,9 +5,9 @@
 
 https://github.com/Kwhitebear/Security_study/tree/main/Windows%20Defender
 
-
 # Bypass
 
+https://github.com/Kwhitebear/Security_study/tree/main/Bypass
 
 # CVE
 
