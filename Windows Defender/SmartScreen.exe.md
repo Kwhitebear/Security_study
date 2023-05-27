@@ -111,11 +111,6 @@ sub_7558A840 내부를 확인해보면 아래와 같다.
  
  SID 관련된 토큰을 생성하고 검증한다.
  
- 
-
- 
-
-
 # Code Signing Certificate
 
 With the digital signature process of executable files and scripts introduced by MS, these certificates prove that the files are safe.
