@@ -14,3 +14,8 @@ https://github.com/Kwhitebear/Security_study/blob/main/Windows%20Defender/Code%2
 # Winlogon.exe
 
 https://github.com/Kwhitebear/Security_study/blob/main/Windows%20Defender/Winlogon.exe.md
+
+
+# Download File 
+
+Name : x32d.7z -> CodeInjection UAC Bypass
