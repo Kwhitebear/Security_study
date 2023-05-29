@@ -9,7 +9,7 @@ https://github.com/Kwhitebear/Security_study/blob/main/Windows%20Defender/MsMpEn
 
 # SmartScreen.exe
 
-https://github.com/Kwhitebear/Security_study/blob/main/Windows%20Defender/Code%20Signing%20Certificate.md
+https://github.com/Kwhitebear/Security_study/blob/main/Windows%20Defender/SmartScreen.exe.md
 
 # Winlogon.exe
 
