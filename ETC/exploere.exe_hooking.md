@@ -250,7 +250,14 @@ MSDN : https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shob
 
 <h2>Now let's start hooking.</h2>
 
+![image](https://github.com/Kwhitebear/Security_study/assets/99308681/8d0622d6-19e7-43ac-b635-40447460dff4)
 
+![image](https://github.com/Kwhitebear/Security_study/assets/99308681/0cce0467-b360-4700-9b9b-b25f482dac37)
+
+![image](https://github.com/Kwhitebear/Security_study/assets/99308681/2312ae23-6874-4e60-9d61-6ca01b563807)
+
+
+<br>
 
 # Difference between PIDL (pointer to an identifier list) and FindFirstFile function
 
