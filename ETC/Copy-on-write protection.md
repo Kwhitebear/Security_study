@@ -32,3 +32,7 @@ If both processes simply write to these pages, the same You can map it to a real
 When process 1 writes to one of these pages, the contents of the physical page are copied to the other physical page, and the virtual memory map for process 1 is updated.<br>
 Both processes now have their own instances of the apge in physical memory.<br>
 other processes cannot see the changes.<br>
+
+In summary, processes run independently using virtual memory address space, but physical memory can have physical pages shared by multiple processes. These shared pages can be used to provide data sharing and efficiency between multiple processes.<br>
+
+When another process writes to a shared page, its access is restricted by memory protection, causing it to copy and refer to the new page.<br>
