@@ -256,6 +256,11 @@ MSDN : https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shob
 
 ![image](https://github.com/Kwhitebear/Security_study/assets/99308681/2312ae23-6874-4e60-9d61-6ca01b563807)
 
+The Windows.Storage namespace contains classes and interfaces for working with the file system and storage.<br>
+This namespace can handle basic file system operations such as creating, deleting, moving, copying files and folders, as well as interacting with local files and remote cloude storage.<br>
+
+
+
 
 <br>
 
