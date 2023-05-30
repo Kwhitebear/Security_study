@@ -7,3 +7,5 @@ https://github.com/Kwhitebear/Security_study/blob/main/MakeMal/C%23/FileStealer.
 https://github.com/Kwhitebear/Security_study/blob/main/MakeMal/C%23/keylogger.md
 
 # Socket
+
+https://github.com/Kwhitebear/Security_study/blob/main/MakeMal/C%23/Socket.md
