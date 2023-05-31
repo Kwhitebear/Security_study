@@ -82,8 +82,170 @@ ntoskrnl.exe는 Windows의 핵심 서비스와 기능을 제공하며, 운영 �
 
 유저 모드(U)에서 커널 모드(K)로, 아래서 위로 함수들이 실행된다. 윈도우 API 함수를 실행하면 kernelbase.dll의 함수 호출 -> ntdll.dll 함수 호출 -> ntoskrnl.exe 커널에서 시스템 콜 실행과 같은 방법으로 실행되고 있다. 마지막으로, 똑같은 CreateFileW가 아니라 ntdll.dll 과 ntoskrnl.exe에서는 앞에 "Nt" 접두어가 붙은 Native API가 실행된다.
 
-
 ![image](https://github.com/Kwhitebear/Security_study/assets/99308681/0693e61a-b5b4-4c60-8bb3-208b1011b53d)
+
+사용되는 라이브러리들을 위에서 아래로(유저모드 -> 커널모드)로 정리해보면 아래와 같다.
+1. Kernel32.dll = 메모리 I/O 관련 윈도우 API를 가지고 있다. 단, 윈도우7/서버2008 윈도우 버전에서는 kernelbase.dll로 코드 실행을 넘기는 역할을 담당한다.
+2. Kernelbase.dll = 최근 윈도우 버전부터 kernel32.dll로부터 인자를 받고 실질적으로 관련 윈도우 API를 가지고 있다. 커널베이스 또한 실질적으로 ntdll.dll의 네이티브 API를 실행하는 역할 담당이다.
+3. Ntdll.dll = 윈도우 API보다 한단계 낮은 Native API 가지고 있다. 윈도우 API는 Native API의 래퍼(wrapper,포장지개념)일 뿐이다.Native API는 공식적으로 문서화 되어있지 않고, 윈도우 버전이 바뀔때마다 바뀌는 경우가 많아 이를 추상화 시키기 위해 윈도우 API가 사용 된다. Ntdll.dll의 Native API를 통해 최종적으로 시스템 콜 CPU 명령어가 어셈블리 단계에서 실행 된다.
+4. Ntoskrnl.exe = 코드 실행은 커널로 넘어가 System Service Dispatch Table(SSDT)를 이용해 시스템 콜 번호를 찾아 실행 한다.
+
+<h2>System Service Dispath Table(SSDT)</h2>
+
+SSDT(System Service Dispatch Table)는 시스템 호출을 요청한 뒤, 전달되는 서비스 번호에 맞는 함수를 찾을 때 참조한다.<br>
+
+시스템 호출을 요청하는 두 가지 명령어(INT 0x2E와 SYSENTER)가 KiSystem Service(system service Dispatcher)를 호출한다.
+1. INT 0x2E나 SYSENTER 같은 시스템 콜이 호출된다. (XP 이후는 SYSENTER를 사용)
+  - http://luckey.tistory.com/86<br>
+2. 시스템 콜이 호출되면 커널에서 KiSystemService(시스템 서비스 디스패처)를 호출한다.
+  - EAX에서 시스템 콜 번호를 읽어 SSDT의 인덱스로 사용<br>
+  - EDX는 인자를 유저모드 스택에서 커털 모드 스택으로 복사한 곳을 가리킴<br>
+3. EAX에서 받은 시스템 콜 번호에 맞게 KeServiceDescriptorTable(SSDT)를 참조하여 Native API를 호출한다. 
+  - `[SSDT+EAX*4]와 같이 참조<br>
+4. 시스템 콜 종료하고 유저 모드로 복귀한다. 
+  - INT 0x2E의 경우 iretd(인터럽트 복귀 명령) 사용.<br>
+  - SYSENTER의 경우 SYSEXIT 사용.<br>
+
+![image](https://github.com/Kwhitebear/Security_study/assets/99308681/c491b43b-1e74-4e08-a495-52b7f30eef75)
+
+KiSystemService가 호출될 때 EAX에는 사용자 영역에서 요청한 서비스 번호가 저장되어 있으며, EDX에는 이러한 서비스에 사용될 인자가 저장되어 있다. 이러한 시스템 호출 번호(EAX)에 맞게 KeServiceDescriptor Table에서 Native API의 주소를 가지고 온다. 그 후 시스템 호출을 종료하고 다시 사용자 모드로 복귀하게 된다.<br>
+
+![image](https://github.com/Kwhitebear/Security_study/assets/99308681/5cd71c25-76f5-4e3b-9375-f2f14d2e25d0)
+
+SSDT(KiServiceTable)에서 서비스 호출 번호에 맞는 주소를 얻은 다음 이를 호출하는 형태로 진행 되는 것이다. 그렇다면 SSDT Hooking은 어느 부분을 후킹해야 하냐면 바로 GetfuncAddress과정에서 후킹한다고 할 수 있다. SYSENTER를 통해 KiFastCallEntry로 진입한 후 서비스 번호에 맞는 서비스 루틴을 SSDT에서 얻어온다. 따라서 SSDT에 존재하고 있는 각 서비스 루틴의 주소를 조작하므로 후킹을 진행할 수 있다.<br>
+
+해당 시스템 호출의 서비스 루틴을 가지고 오는 과정에서 SSDT를 참조하는데, SSDT의 해당 번호가 나타내는 주소를 후킹하므로 우리가 원하는 흐름으로 조작할 수 있다. 위 그림을 예로 시스템 호출이 요청되었을 때 서비스 번호가 저장되어 있는 EAX의 값이 0xAD라면 SSDT에서 0xAD가 가리키는 서비스 루틴의 주소 0xCCCCCCCC가 반환되어 이를 호출한다. 하지만 만약 공격자가 SSDT를 후킹하여 0xDDDDDDDD로 서비스 루틴의 주소를 변경하였다면, 시스템 호출 0xAD가 발생할 때마다 0xDDDDDDDD를 지나가게 된다.<br>
+
+# Hooking 후킹
+
+다시 돌아와서 User mode hooking에 대해 알아본다.<br>
+
+후킹은 특정 시스템의 함수 콜/ 메시지 / 이벤트 등을 가로채 그 시스템의 행동을 바꾸는 기법들을 일컫는다. 자신의 프로세스에 로드된 kernel32.dll 등의 라이브러리를 통해 윈도우 API를 사용한다. 따라서 프로세스에 로드된 kernel32.dll의 윈도우 API를 후킹하면 악성 행위를 잡을 수 있다.<br>
+
+![image](https://github.com/Kwhitebear/Security_study/assets/99308681/e6893954-fb00-40b5-84c7-b744fa725e38)
+
+예를 들어 악성코드 실행시 "C:\Users\malware.txt" 라는 파일을 생성한다고 가정해보면
+1. 생성되는 모든 프로세스의 kernel32.dll 라이브러리의 CreateFileW() 윈도우 API를 후킹한다.
+2. 악성코드가 kernel32.dll의 CreateFileW() 윈도우 API를 이용한다.
+3. IF ) Kernel32.dll의 CreateFileW()함수는 후킹되었기 때문에 실행시 방어자의 프로세스로 가로챈다. 방어자의 프로세스는 매개변수 중 "C:\Users\malware.txt를 발견한 뒤, 악성코드라고 판단, 타겟 프로세스를 종료시킨다.
+4. ELSE ) 정상 프로그램 후킹 후 CreateFileW()의 매개변수 중 이상한 점을 발견하지 못했다. 악성코드가 아니라고 판단, 다시 실행을 kernel32.dll로 넘겨준다. 그 뒤 CreateFileW() 함수는 정상적으로 실행된다.
+
+EDR 솔루션들이 사용하는 후킹 방법중 하나는 DLL 인젝션을 이용한 인라인 후킹 (inline hooking)이다.
+
+인라인 후킹은 타겟 함수의 주소를 찾은 뒤, 첫 n바이트의 어셈블리 명령어들을 JMP등의 명령어로 패치해 코드실행을 가로채간다. 예를 들어 이번에는 ntdll.dll 라이브러리에 있는 "NtProtectVirtualMemory" 윈도우 API를 패치한다고 가정하면, 해당 함수는 악성코드들이 쉘코드를 메모리에 작성/옮겨넣기 전, 메모리의 권한을 바꾸는데 자주 사용되는 함수이다.<br>
+
+
+NtProtectVirtualMemory : 'Virtual Protect' API 내부 호출 API(호출 프로세스의 가상 주소 공간에서 커밋된 페이지 영역에 대한 보호를 변경)<br>
+
+![image](https://github.com/Kwhitebear/Security_study/assets/99308681/fc17a979-bf3c-445d-9a96-b45a886c90e3)
+
+정상적인 NtProtectVIrutalMemory 이다.
+
+![image](https://github.com/Kwhitebear/Security_study/assets/99308681/060db73a-2214-4089-9de0-3ee299e48789)
+
+![image](https://github.com/Kwhitebear/Security_study/assets/99308681/4877e311-c9fa-45b1-9857-2951453a0341)
+
+![image](https://github.com/Kwhitebear/Security_study/assets/99308681/71edb7a7-e2ea-4dff-a2e8-1a17a6708f8d)
+
+DLL Injection 상태이다.
+
+아래는 Injection 
+
+```
+#define _CRT_SEUCRE_NO_WARNINGS
+
+#include <stdio.h>
+#include <Windows.h>
+#include <TlHelp32.h>
+#include <tchar.h>
+
+int main(int argc, char* argv[])
+{
+    DWORD pid = 0;
+    LPVOID DllBuf;
+    HANDLE hSnapshot, hProcess, hThread;
+    HMODULE hMod;
+    LPTHREAD_START_ROUTINE hModAddr;
+    LPCTSTR DllPath = "C:\\Project1.dll";
+
+    PROCESSENTRY32 pe32 = { 0, };
+    pe32.dwSize = sizeof(PROCESSENTRY32);
+
+    hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, NULL);
+    if (Process32First(hSnapshot, &pe32))
+    {
+        do
+        {
+            if (!_tcsicmp(pe32.szExeFile, TEXT("notepad.exe")))
+            {
+                printf("[+] Find Process\n");
+                pid = pe32.th32ProcessID;
+                printf("[+] PID : %d\n", pid);
+                break;
+            }
+        } while (Process32Next(hSnapshot, &pe32));
+    }CloseHandle(hSnapshot);
+
+    if (!(hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid)))
+    {
+        printf("[-] OpenProcess Fail\n");
+    }
+    printf("[+] OpenProcess Success 0x%x\n", hProcess);
+
+    if (!(DllBuf = VirtualAllocEx(hProcess, NULL, lstrlen(DllPath) + 1, MEM_COMMIT, PAGE_READWRITE)))
+    {
+        printf("[-] VirtualAllocEx Fail\n");
+    }
+    printf("[+] VirtualAllocEx Success 0x%x\n", DllBuf);
+
+    if (!(WriteProcessMemory(hProcess, DllBuf, (LPVOID)DllPath, lstrlen(DllPath) + 1, NULL)))
+    {
+        printf("[-] WriteProcessMemory Fail\n");
+    }
+
+    if (!(hMod = GetModuleHandle(TEXT("kernel32.dll"))))
+    {
+        printf("[-] GetModuleHandle Fail\n");
+    }
+    printf("[+] kernel32.dll : 0x%x\n", hMod);
+
+    if (!(hModAddr = (LPTHREAD_START_ROUTINE)GetProcAddress(hMod, "LoadLibraryA")))
+    {
+        printf("[-] GetProcAddress Fail\n");
+    }
+    printf("[+] Kernel32.LoadLibarayA : 0x%x\n",hModAddr);
+
+    if (!(hThread = CreateRemoteThread(hProcess, NULL, 0, hModAddr, DllBuf, 0, NULL)))
+    {
+        printf("[-] CreateRemoteThread Fail\n");
+    }
+    printf("[+] Thread Handle : 0x%x\n", hThread);
+    WaitForSingleObject(hThread, INFINITE);
+    CloseHandle(hThread);
+    CloseHandle(hProcess);
+    system("pause");
+
+    return TRUE;
+}
+```
+
+
+![image](https://github.com/Kwhitebear/Security_study/assets/99308681/2b907bb6-db6d-4fbf-a5a0-4b5414b9b416)
+
+본 환경에서는 아무리 분석해도 계속 실행이 잘된다. 그래서 다른 블로그를 참조하면
+
+![image](https://github.com/Kwhitebear/Security_study/assets/99308681/482b1032-a406-4dcf-9158-177201db1937)
+
+메시지 박스가 출력이되면서 막아버린다고 한다.
+
+후킹된 결과는 아래의 블로그를 확인해보자
+
+https://blog.sunggwanchoi.com/kr-yujeo-raendeu-huking/
+
+
+
+
+
 
 
 
