@@ -6,11 +6,13 @@ This article will write about closing Windows Defender using the registry<br>
 
 Note that everything must be done with elevated privileges.<br>
 
-# Registry
+# Result
 
-Change Registry<br><br>
+![image](https://github.com/Kwhitebear/Security_study/assets/99308681/181b623a-1e16-4866-bf2d-62de6755f88e)
 
+<h3>This is a methodology, and if you use it as shown below, it will be detected by Windows Defender. It will take another effort to circumvent this.</h3>
 
+<br><br>
 
 # Disable spyware and virus detction
 
