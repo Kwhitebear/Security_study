@@ -214,8 +214,19 @@ reg add "HKLM\System\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWO
 reg add "HKLM\System\CurrentControlSet\Services\SecurityHealthService" /v "Start" /t REG_DWORD /d "4" /f
 ```
 
+![image](https://github.com/Kwhitebear/Security_study/assets/99308681/5670cb8f-afe4-41a5-83b9-f47e0767d39f)
+
+- HKLM\System\CurrentControlSet\Services\WdBoot : Windows Defender Boot Driver
+- HKLM\System\CurrentControlSet\Services\WdFilter : Windows Defender Filter Driver
+- HKLM\System\CurrentControlSet\Services\WdNisDrv : Windows Defender Network Scan Driver
+- HKLM\System\CurrentControlSet\Services\WdNisSvc : Windows Defender Network Inspection Service
+- HKLM\System\CurrentControlSet\Services\WinDefend : Windows Defender service
+- HKLM\System\CurrentControlSet\Services\SecurityHealthService : Windows Security Health Service
+
 <br>
 
+Change all services from automatic to manual<br>
+When value 4 is changed, it is changed manually.<br>
 
 
 
