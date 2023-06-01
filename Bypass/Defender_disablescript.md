@@ -8,6 +8,12 @@ Note that everything must be done with elevated privileges.<br>
 
 # Registry
 
+Change Registry<br><br>
+
+
+
+# Disable spyware and virus detction
+
 ```
 reg add "HKLM\Software\Policies\Microsoft\Windows Defender" /v "DisableAntiSpyware" /t REG_DWORD /d "1" /f
 reg add "HKLM\Software\Policies\Microsoft\Windows Defender" /v "DisableAntiVirus" /t REG_DWORD /d "1" /f
@@ -16,7 +22,9 @@ reg add "HKLM\Software\Policies\Microsoft\Windows Defender" /v "DisableAntiVirus
 ![image](https://github.com/Kwhitebear/Security_study/assets/99308681/89289e3f-05a3-4ca6-939c-7a03fd6c054f)
 
 DisableAntiSpyware & DisableAntiVirus Value Set 1.<br>
-A value of 1 means disable spyware and virus detection.<br>
+A value of 1 means disable spyware and virus detection.<br><br>
+
+# Disable File Upload Service
 
 ```
 reg add "HKLM\Software\Policies\Microsoft\Windows Defender\MpEngine" /v "MpEnablePus" /t REG_DWORD /d "0" /f
@@ -25,7 +33,10 @@ reg add "HKLM\Software\Policies\Microsoft\Windows Defender\MpEngine" /v "MpEnabl
 ![image](https://github.com/Kwhitebear/Security_study/assets/99308681/26183974-3efc-4f00-8ad2-395127be2394)
 
 Create Folder "MpEngine", MpEnablePus Value set 0.<br>
-A value of 0 means Disable Windows Defender's unauthorized file upload feature.<br>
+A value of 0 means Disable Windows Defender's unauthorized file upload feature.<br><br>
+
+
+# Disable Winodws Defender Service
 
 ```
 reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableBehaviorMonitoring" /t REG_DWORD /d "1" /f
@@ -44,7 +55,10 @@ Create Folder "Real-Time Protection", everything Value set 1.<br>
 - DisableRealtimeMonitoring : Disable Windows Defender's real-time monitoring feature. Real-time monitoring monitors processes and files running on the system in real time to block malicious behavior.
 - DisableScanOnRealtimeEnable : Disable scanning when Windows Defender's real-time activation occurs. Scan on real-time activation serves to scan the system for amlware when Windows Defender is activated.
 
-<br>
+<br><br>
+
+
+# Disable Windows Defender notification
 
 ```
 reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Reporting" /v "DisableEnhancedNotifications" /t REG_DWORD /d "1" /f
@@ -55,7 +69,10 @@ reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Reporting" /v "Disabl
 Create Folder "Reporting", DisableEnhancedNotifications Value set 1.<br>
 
 One of the settings in Windows Defender, the ability to control enhanced notifications.<br>
-A value of 1 means "disable" the feature. So, this command disables enhanced notifications in Windows Defender.<br>
+A value of 1 means "disable" the feature. So, this command disables enhanced notifications in Windows Defender.<br><br>
+
+
+# Disable SpyNet
 
 ```
 reg add "HKLM\Software\Policies\Microsoft\Windows Defender\SpyNet" /v "DisableBlockAtFirstSeen" /t REG_DWORD /d "1" /f
@@ -84,7 +101,10 @@ Create Folder "SpyNet"<br>
 - SpynetReporting : Controls SpyNet's ability to submit reports. A value of 0 means "disable": report submission.
 - SubmitSamplesConsent : Control whether to consent to submit sample files. A value of 0 means "disable": consent to submit sample files.
 
-<br>
+<br><br>
+
+
+# Disable Windows Defender logging
 
 ```
 reg add "HKLM\System\CurrentControlSet\Control\WMI\Autologger\DefenderApiLogger" /v "Start" /t REG_DWORD /d "0" /f
@@ -104,7 +124,10 @@ API logging refers to recording information about application programming interf
 - DefenderApiLogger : This location is the registry path where settings for Windows Defender's API logging are stored. Set the "Start" value to 0 to "disable" that logging. API logging is used to record log information about the operation of Windows Defender.
 - DefenderAuditLogger : This location is the registry path where the settings for Windows Defender's audit logging are stored. Set the "Start" value to 0 to "disable" that logging. Audit logging records log information about Windows Defender's actions and events.
 
-<br>
+<br><br>
+
+
+# Disable Windows Defender task scheduler
 
 ```
 schtasks /Change /TN "Microsoft\Windows\ExploitGuard\ExploitGuard MDM policy Refresh" /Disable
@@ -168,6 +191,9 @@ Windows Defender Scheduled Scan -> "<Command>C:\ProgramData\Microsoft\Windows De
 
 <br><br>
 
+
+# Delete Windows Defender persistence mechanism
+
 ```
 reg delete "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" /v "Windows Defender" /f
 reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "Windows Defender" /f
@@ -177,6 +203,8 @@ reg delete "HKLM\Software\Microsoft\Windows\CurrentVersion\Run" /v "WindowsDefen
 The Run folder serves as a persistence mechanism to automatically run every bootup. Delete the value in the registry to prevent Windows Defender from running at boot time.
 
 <br><br>
+
+# Disable Windows defender menu context and other contexts
 
 ```
 reg delete "HKCR\*\shellex\ContextMenuHandlers\EPP" /f
@@ -201,9 +229,11 @@ This identifider is associated with an entry registered in the registry and used
 Typically, this value represents the globally unique identifier (GUID) or class identifier(CLSID) of the registered program.<br>
 GUIDs are used as unique identifiers, and each entry points to a specific program or component.<br>
 
-Therefore, an EPP value such as "Example" is a value for identifying a registered program to which the corresponding context menu handler is connected.<br>
+Therefore, an EPP value such as "Example" is a value for identifying a registered program to which the corresponding context menu handler is connected.
 
-<br>
+<br><br>
+
+# Windows Defender auto->manual
 
 ```
 reg add "HKLM\System\CurrentControlSet\Services\WdBoot" /v "Start" /t REG_DWORD /d "4" /f
