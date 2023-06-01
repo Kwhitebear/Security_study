@@ -184,8 +184,24 @@ reg delete "HKCR\Directory\shellex\ContextMenuHandlers\EPP" /f
 reg delete "HKCR\Drive\shellex\ContextMenuHandlers\EPP" /f
 ```
 
+![image](https://github.com/Kwhitebear/Security_study/assets/99308681/36ba46a2-1bc9-4ca3-85a2-36d13ee089a9)
 
+The picture above is a normal task scheduler.<br>
 
+![image](https://github.com/Kwhitebear/Security_study/assets/99308681/e1a4f307-174d-4e3d-be53-067fd3939641)
+
+- HKCR*\shellex\ContextMenuHandlers\EPP : Represents a context menu handler for any file type. A context menu handler defines the options displayed in the right-click menu for that file type. "EPP" refers to Windows Defender's Context Menu Handler.
+- HKCR\Directory\shellex\ContextMenuHandlers\EPP : This path represents the context menu handler for the folder(Directory). Define the behavior for the menu that appears when you right-click on a folder
+- HKCR\Drive\shellex\ContextMenuHandlers\EPP : This path represents the context menu handler for Drive. Define the behavior for the menu that appears when you right-click on a drive
+
+ <strong>EPP(Context Menu Handler for Windows Defender) </strong><br>
+ The EPP value (Example:{09A201-01930a90-....-.....}) unique identifier pointing to the registered program for that context menu handler.<br>
+This identifider is associated with an entry registered in the registry and used to launch the corresponding context menu handler.<br>
+
+Typically, this value represents the globally unique identifier (GUID) or class identifier(CLSID) of the registered program.<br>
+GUIDs are used as unique identifiers, and each entry points to a specific program or component.<br>
+
+Therefore, an EPP value such as "Example" is a value for identifying a registered program to which the corresponding context menu handler is connected.<br>
 
 <br>
 
