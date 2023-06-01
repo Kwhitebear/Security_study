@@ -115,6 +115,8 @@ schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Verifi
 ```
 
 ![image](https://github.com/Kwhitebear/Security_study/assets/99308681/2900e232-f3bb-410e-97c3-9d4481a54bcf)
+<br>
+![1685592873135](https://github.com/Kwhitebear/Security_study/assets/99308681/618a15ff-56df-4623-b306-cd0254d35593)
 
 The picture above is a normal task scheduler.<br>
 
@@ -172,14 +174,18 @@ reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "Windows Defe
 reg delete "HKLM\Software\Microsoft\Windows\CurrentVersion\Run" /v "WindowsDefender" /f
 ```
 
+The Run folder serves as a persistence mechanism to automatically run every bootup. Delete the value in the registry to prevent Windows Defender from running at boot time.
 
-<br>
+<br><br>
 
 ```
 reg delete "HKCR\*\shellex\ContextMenuHandlers\EPP" /f
 reg delete "HKCR\Directory\shellex\ContextMenuHandlers\EPP" /f
 reg delete "HKCR\Drive\shellex\ContextMenuHandlers\EPP" /f
 ```
+
+
+
 
 <br>
 
