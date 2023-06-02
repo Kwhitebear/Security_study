@@ -16,7 +16,7 @@ AMSI has three componetns.<br>
 
 1. Consumer - A component that "consumes" AMSI and can request specific data scans from AV/EDR solutions.
 2. Amsi.dll - A library containing AMSI functions. Loaded into the Consumer process. Consumer Processes send AMSI requests to providers using function in this library.
-3. Provider - The component that "provides" AMSI, AV/EDR solutions. After performing the scan request received through AMSI, the result is returned to the COnsumer.
+3. Provider - The component that "provides" AMSI, AV/EDR solutions. After performing the scan request received through AMSI, the result is returned to the Consumer.
 
 
 Originally, the consumer of AMSI was about PowerShell, but as the version goes up, all of PowerShell, JavaScript, VBA, WMI, and .NET use AMSI. AMSI Provider has been deferred to AV/EDR solution companies such as Microsoft, Crowd Strike, and Bitdefender.
