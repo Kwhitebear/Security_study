@@ -238,26 +238,26 @@ IMAGE_OPTIONAL_HEADER.DataDirectory[0].VirtualAddress 값이 실제 IMAGE_EXPORT
 
 # 요약
 
-Q. PE 파일에 대해 설명하시오
-A. 
-PE 파일은 만든 파일이 실행 할 수 있는 다른 곳에 옮겨져도 실행이 가능하도록 만들어 놓은 포맷입니다. 
-PE 파일 생성과정은 소스코드 작성 -> 바이너리로 변경 -> 필요한 라이브러리 연결 -> exe 및 dll 으로 알맞게 파일을 빌드합니다. 
-PE 파일을 빌드 할 때, 파일 실행 시 필요한 정보들을 규약에 맞춰 PE 헤더 기입 하기 때문에 PE 파일 헤더 정보를 보고 운영체제가 해당 프로그램을 실행시키게 됩니다. 
-PE 파일은 IMAGE_DOS_HEADER 구조체로 시작하며 e_magic 필드에는 "MZ" 라는 문자열로 시작하고 대다수 필드는 사용이 되지 않는다.
-그리고 NT_HEADER 구조체가 나오는데 Signature File Header Optional Header가 있다.
-긱 주요 맴버들로는 Machine, NumberOFSections, ImageBase등이 있다.
+Q. PE 파일에 대해 설명하시오<br>
+A. <br>
+PE 파일은 만든 파일이 실행 할 수 있는 다른 곳에 옮겨져도 실행이 가능하도록 만들어 놓은 포맷입니다. <br>
+PE 파일 생성과정은 소스코드 작성 -> 바이너리로 변경 -> 필요한 라이브러리 연결 -> exe 및 dll 으로 알맞게 파일을 빌드합니다. <br>
+PE 파일을 빌드 할 때, 파일 실행 시 필요한 정보들을 규약에 맞춰 PE 헤더 기입 하기 때문에 PE 파일 헤더 정보를 보고 운영체제가 해당 프로그램을 실행시키게 됩니다. <br>
+PE 파일은 IMAGE_DOS_HEADER 구조체로 시작하며 e_magic 필드에는 "MZ" 라는 문자열로 시작하고 대다수 필드는 사용이 되지 않는다.<br>
+그리고 NT_HEADER 구조체가 나오는데 Signature File Header Optional Header가 있다.<br>
+긱 주요 맴버들로는 Machine, NumberOFSections, ImageBase등이 있다.<br>
 
-VA 가상 메모리 절대 주소이고, RVA에는 ImageBase부터 상대 주소이다.
-PE안에서는 상대주소로 적힌다. 그 이유는 메모리에 적재시 절대주소가 들어가면 재배치가 어렵기 때문이다. 그래서 상대주소를 사용해서 ImageBase에서 얼마만큼 떨어진 곳에 이동하면 되기 때문에 재배치가 수월하다.
+VA 가상 메모리 절대 주소이고, RVA에는 ImageBase부터 상대 주소이다.<br>
+PE안에서는 상대주소로 적힌다. 그 이유는 메모리에 적재시 절대주소가 들어가면 재배치가 어렵기 때문이다. 그래서 상대주소를 사용해서 ImageBase에서 얼마만큼 떨어진 곳에 이동하면 되기 때문에 재배치가 수월하다.<br>
 
-VA 주소 확인하는 방법은 RVA + Imagebase 이다.
+VA 주소 확인하는 방법은 RVA + Imagebase 이다.<br>
 
-RAW는 PE파일이 로딩되기 전에 Fileoffset이다.
-실행되기 전의 주소이기 때문에 파일 자체를 분석해야 할 때 주로 이 주소를 기반으로 데이터 확인한다. 
+RAW는 PE파일이 로딩되기 전에 Fileoffset이다.<br>
+실행되기 전의 주소이기 때문에 파일 자체를 분석해야 할 때 주로 이 주소를 기반으로 데이터 확인한다. <br>
 
 # 출저 
-https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=wsi5555&logNo=221259915738
-https://mocharoll.tistory.com/16
-https://hxxyxxn-1238.tistory.com/65
-https://mocharoll.tistory.com/15
-https://skensita.tistory.com/entry/%EC%95%85%EC%84%B1%EC%BD%94%EB%93%9C-%EB%B6%84%EC%84%9D%EA%B0%80-%EC%9E%85%EC%9E%A5%EC%97%90%EC%84%9C-%EB%B3%B8-PE-%EA%B5%AC%EC%A1%B0
+https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=wsi5555&logNo=221259915738<br>
+https://mocharoll.tistory.com/16<br>
+https://hxxyxxn-1238.tistory.com/65<br>
+https://mocharoll.tistory.com/15<br>
+https://skensita.tistory.com/entry/%EC%95%85%EC%84%B1%EC%BD%94%EB%93%9C-%EB%B6%84%EC%84%9D%EA%B0%80-%EC%9E%85%EC%9E%A5%EC%97%90%EC%84%9C-%EB%B3%B8-PE-%EA%B5%AC%EC%A1%B0<br.
