@@ -14,3 +14,6 @@ https://github.com/Kwhitebear/Security_study/blob/main/ETC/exploere.exe_hooking.
 
 https://github.com/Kwhitebear/Security_study/blob/main/ETC/Copy-on-write%20protection.md
 
+# PE FIle Analyze(KR)
+
+https://github.com/Kwhitebear/Security_study/blob/main/ETC/PE%20File(KR).md
