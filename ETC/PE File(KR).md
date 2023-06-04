@@ -120,7 +120,7 @@ IMAGE_DOS_HEADER의 e_lfanew 필드는 파일 오프셋으로 0x00000010을 가�
 
 ![image](https://github.com/Kwhitebear/Security_study/assets/99308681/7e300c03-62c3-41bd-b070-f89b8d17e431)
 
-<strong>File Header 주요 맴버</strong><br>
+<strong>Optional Header 주요 맴버</strong><br>
 
 1. Magic - Magic 넘버는 32비트면 0x10B, 64비트면 0x20B
 2. AddressOfEntryPoint - EP의 RVA 값을 가지고 있음, 프로세스의 시작 위치 주소값(RVA)
